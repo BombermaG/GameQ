@@ -23,8 +23,24 @@
  */
 class GameQ_Protocols_Mta extends GameQ_Protocols_ASE
 {
-	protected $name = "mta";
-	protected $name_long = "Multi Theft Auto";
+    protected $name = "mta";
+    protected $name_long = "Multi Theft Auto";
 
-	protected $port = 22126;
+    protected $port = 22126;
+
+    /**
+     * Overload for server port
+     *
+     * @param bool|string $ip
+     * @param bool|integer $port
+     * @param array $options
+     */
+    public function __construct($ip = FALSE, $port = FALSE, $options = array())
+    {
+        // Got to do this first
+        parent::__construct($ip, $port, $options);
+
+        // Correct the server port (for MyArena.ru)
+        $this->port += 123;
+    }
 }

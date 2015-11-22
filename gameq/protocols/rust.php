@@ -31,8 +31,8 @@ class GameQ_Protocols_Rust extends GameQ_Protocols_Source
     /**
     * Overload for client port
     *
-    * @param string $ip
-    * @param integer $port
+    * @param bool|string $ip
+    * @param bool|integer $port
     * @param array $options
     */
     public function __construct($ip = FALSE, $port = FALSE, $options = array())
