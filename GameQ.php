@@ -802,15 +802,17 @@ class GameQ
 
 		// This is when it should stop
 		$time_stop = microtime(TRUE) + $this->timeout;
+		print_r($read);
 
 		// Let's loop until we break something.
 		while ($loop_active && microtime(TRUE) < $time_stop)
 		{
+			echo microtime(TRUE) .' '. $time_stop . PHP_EOL;
 			// Now lets listen for some streams, but do not cross the streams!
 			$streams = stream_select($read, $write, $except, 0, $this->stream_timeout);
 
-			// We had error or no streams left, kill the loop
-			if($streams === FALSE || ($streams <= 0))
+			// We had error kill the loop
+			if($streams === FALSE)
 			{
 			    $loop_active = FALSE;
 				break;
@@ -819,24 +821,20 @@ class GameQ
 			// Loop the sockets that received data back
 			foreach($read AS $socket)
 			{
-				// See if we have a response
-				if(($response = stream_socket_recvfrom($socket, 8192)) === FALSE)
+				// See if we have a response and it doesn't empty
+				if((($response = stream_socket_recvfrom($socket, 8192)) === FALSE) || strlen($response) == 0)
 				{
-					continue; // No response yet so lets continue.
-				}
-
-				// Check to see if the response is empty, if so we are done
-				// @todo: Verify that this does not affect other protocols, added for Minequery
-				// Initial testing showed this change did not affect any of the other protocols
-				if(strlen($response) == 0)
-				{
-					// End the while loop
-					$loop_active = FALSE;
-					break;
+					continue; // No or empty response yet so lets continue.
 				}
 
 				// Add the response we got back
 				$responses[(int) $socket][] = $response;
+			}
+
+			// Received response for each query
+			// @TODO: Fix situation when using DPROTO (more then 1 response packet for 1 query)
+			if (count($sockets) <= count($responses)) {
+				break;
 			}
 
 			// Because stream_select modifies read we need to reset it each
