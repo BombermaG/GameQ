@@ -802,12 +802,10 @@ class GameQ
 
 		// This is when it should stop
 		$time_stop = microtime(TRUE) + $this->timeout;
-		print_r($read);
 
 		// Let's loop until we break something.
 		while ($loop_active && microtime(TRUE) < $time_stop)
 		{
-			echo microtime(TRUE) .' '. $time_stop . PHP_EOL;
 			// Now lets listen for some streams, but do not cross the streams!
 			$streams = stream_select($read, $write, $except, 0, $this->stream_timeout);
 
