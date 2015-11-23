@@ -266,28 +266,28 @@ class GameQ
 	public function addServer(Array $server_info=NULL)
 	{
 		// Check for server type
-		if(!key_exists(self::SERVER_TYPE, $server_info) || empty($server_info[self::SERVER_TYPE]))
+		if(!array_key_exists(self::SERVER_TYPE, $server_info) || empty($server_info[self::SERVER_TYPE]))
 		{
 			throw new GameQException("Missing server info key '".self::SERVER_TYPE."'");
 			return FALSE;
 		}
 
 		// Check for server host
-		if(!key_exists(self::SERVER_HOST, $server_info) || empty($server_info[self::SERVER_HOST]))
+		if(!array_key_exists(self::SERVER_HOST, $server_info) || empty($server_info[self::SERVER_HOST]))
 		{
 			throw new GameQException("Missing server info key '".self::SERVER_HOST."'");
 			return FALSE;
 		}
 
 		// Check for server id
-		if(!key_exists(self::SERVER_ID, $server_info) || empty($server_info[self::SERVER_ID]))
+		if(!array_key_exists(self::SERVER_ID, $server_info) || empty($server_info[self::SERVER_ID]))
 		{
 			// Make an id so each server has an id when returned
 			$server_info[self::SERVER_ID] = $server_info[self::SERVER_HOST];
 		}
 
 		// Check for options
-		if(!key_exists(self::SERVER_OPTIONS, $server_info)
+		if(!array_key_exists(self::SERVER_OPTIONS, $server_info)
 			|| !is_array($server_info[self::SERVER_OPTIONS])
 			|| empty($server_info[self::SERVER_OPTIONS]))
 		{
