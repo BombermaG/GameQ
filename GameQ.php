@@ -133,6 +133,7 @@ class GameQ
 		'debug' => FALSE,
 		'timeout' => 3, // Seconds
 		'filters' => array(),
+		'disabled_packets' => array(), // Packets which we don't want to request
 
         // Advanced settings
 	    'stream_timeout' => 200000, // See http://www.php.net/manual/en/function.stream-select.php for more info
@@ -239,6 +240,29 @@ class GameQ
 	public function removeFilter($name)
 	{
 		unset($this->options['filters'][$name]);
+
+		return $this; // Make chainable
+	}
+
+	/**
+	 * Set packets as disabled
+	 *
+	 * @param string|array $type
+	 * @return GameQ
+	 */
+	public function disablePackets($type)
+	{
+		if (is_array($type))
+		{
+			foreach ($type as $name)
+			{
+				$this->options['disabled_packets'][$name] = false;
+			}
+		}
+		else
+		{
+			$this->options['disabled_packets'][$type] = false;
+		}
 
 		return $this; // Make chainable
 	}
@@ -430,6 +454,9 @@ class GameQ
 		// Loop thru all of the servers added and categorize them
 		foreach($this->servers AS $server_id => $instance)
 		{
+			// Remove requests that we do not need
+			$instance->removeUnwantedPackets();
+
 			// Check to see what kind of server this is and how we can send packets
 			if($instance->packet_mode() == GameQ_Protocols::PACKET_MODE_LINEAR)
 			{

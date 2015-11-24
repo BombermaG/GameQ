@@ -408,11 +408,43 @@ abstract class GameQ_Protocols_Core
 	}
 
 	/**
+	 * Query for only needed info, remove unneeded queries
+	 */
+	public function removeUnwantedPackets()
+	{
+		foreach ($this->options['disabled_packets'] as $type => $enable)
+		{
+			if (!$enable)
+			{
+				if (isset($this->packets[$type]))
+				{
+					unset($this->packets[$type]);
+				}
+				if (($key = array_search('process_' . $type, $this->process_methods)) !== FALSE)
+				{
+					unset($this->process_methods[$key]);
+				}
+			}
+		}
+	}
+
+	/**
 	 * Determine whether or not this protocol has some kind of challenge
 	 */
 	public function hasChallenge()
 	{
-		return (isset($this->packets[self::PACKET_CHALLENGE]) && !empty($this->packets[self::PACKET_CHALLENGE]));
+		if (isset($this->packets[self::PACKET_CHALLENGE])) {
+			// Check for existing challenge's place in packet
+			foreach ($this->packets as $packet) {
+				if (preg_match('/%s/', $packet)) {
+					return TRUE;
+				}
+			}
+			// If don't have packets with challenge, remove challenge query
+			unset($this->packets[self::PACKET_CHALLENGE]);
+		}
+
+		return FALSE;
 	}
 
 	/**
