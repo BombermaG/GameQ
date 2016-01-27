@@ -157,7 +157,7 @@ class GameQ_Protocols_Source extends GameQ_Protocols
 
         // Make sure the data is formatted properly
         // Source is 0x49, Goldsource is 0x6d, 0x44 I am not sure about
-        if (!in_array($type, array( "\x49", "\x44", "\x6d" ))) {
+        if (!in_array($type, array( "\x49", "\x6d" ))) {
             throw new GameQ_ProtocolsException("Data for " . __METHOD__
                                                . " does not have the proper header type (should be 0x49|0x44|0x6d). Header type: 0x"
                                                . bin2hex($type));
