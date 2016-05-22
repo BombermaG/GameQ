@@ -233,7 +233,7 @@ class GameQ_Protocols_Source extends GameQ_Protocols
         }
 
         // Extra data flag
-        if ($buf->lookAhead(1) !== false) {
+        if (!empty($buf->lookAhead(1))) {
             // Extra data flag
             $edf = $buf->readInt8();
 
